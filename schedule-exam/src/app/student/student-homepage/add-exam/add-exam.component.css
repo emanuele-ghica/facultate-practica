@@ -1,0 +1,18 @@
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+form, mat-form-field {
+  margin-top: 15px
+}
+
+mat-form-field {
+  width: 250px;
+}
+
+input::placeholder {
+  font: 12px sans-serif;
+}

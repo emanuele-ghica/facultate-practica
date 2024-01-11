@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Exam</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="addForm">
+    <mat-form-field>
+      <mat-label>Choose professor</mat-label>
+      <mat-select formControlName="professor">
+        <mat-option *ngFor="let professor of professorsNames" [value]="professor.value" > {{professor.viewValue}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Choose subject</mat-label>
+      <mat-select formControlName="subject">
+        <mat-option *ngFor="let subject of subjectNames" [value]="subject.value">{{subject.viewValue}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Starting hour:</mat-label>
+      <input matInput
+             placeholder="Enter the starting hour:"
+             formControlName="startingHour"/>
+      <mat-error> starting hour is invalid</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>End hour</mat-label>
+      <input matInput
+             placeholder="Enter the ending hour:"
+             formControlName="endingHour"/>
+      <mat-error> End hour is invalid</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" color="primary">Cancel</button>
+
+  <button [mat-dialog-close]="true" type="submit" class="save-button" mat-raised-button color="primary"
+          (click)="postExam()">
+    Save</button>
+</mat-dialog-actions>
+
