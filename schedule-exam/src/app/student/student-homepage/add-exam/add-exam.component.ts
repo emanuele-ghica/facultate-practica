@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SubjectModel} from "./subject.model";
 import {ProfessorModel} from "./professor.model";
 import {StudentService} from "../../student.service";
+import {formatDate} from "@angular/common";
 
 
 @Component({
@@ -42,6 +43,12 @@ export class AddExamComponent implements OnInit{
           Validators.required
         ],
       ],
+      date: [
+        '',
+        [
+          Validators.required
+        ],
+      ],
       startingHour: [
         '',
         [
@@ -59,7 +66,14 @@ export class AddExamComponent implements OnInit{
 
 
   postExam() {
+    const myDate: string = this.addForm.get('date')?.value;
+    const formattedDate = new Date(myDate).toLocaleDateString('ro-RO', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+      })
     if(this.addForm.valid) {
+      this.addForm.get('date')?.patchValue(formattedDate);
       const examData = this.addForm.value;
       this._studentService.addExamData(examData);
     }

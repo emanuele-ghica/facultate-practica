@@ -24,16 +24,22 @@
   <tr>
     <th scope="col">Professor Name</th>
     <th scope="col">Subject Name</th>
+    <th scope="col">Date</th>
     <th scope="col">Starting Hour</th>
     <th scope="col">Ending Hour</th>
+    <th scope="col">Status</th>
   </tr>
   </thead>
   <tbody >
   <tr *ngFor="let row of examData">
     <td>{{row.professor}}</td>
     <td>{{row.subject}}</td>
+    <td>{{row.date}}</td>
     <td>{{row.startingHour}}</td>
     <td>{{row.endingHour}}</td>
+    <td>
+      <button mat-raised-button color="warn">Pending</button>
+    </td>
     <td>
       <button mat-raised-button color="warn" class="table-button">Delete</button>
     </td>
