@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SecretaryHomepageComponent } from './secretary-homepage/secretary-homepage.component';
 import {RouterModule} from "@angular/router";
 import {LoginComponent} from "../login/login.component";
+import {MatButtonModule} from "@angular/material/button";
 
 
 
@@ -10,12 +11,13 @@ import {LoginComponent} from "../login/login.component";
   declarations: [
     SecretaryHomepageComponent
   ],
-  imports: [
-    RouterModule.forChild([
-      {path: '', component: SecretaryHomepageComponent},
-      {path: 'login', component:LoginComponent}
-    ]),
-    CommonModule
-  ]
+    imports: [
+        RouterModule.forChild([
+            {path: '', component: SecretaryHomepageComponent},
+            {path: 'login', component: LoginComponent}
+        ]),
+        CommonModule,
+        MatButtonModule
+    ]
 })
 export class SecretaryModule { }

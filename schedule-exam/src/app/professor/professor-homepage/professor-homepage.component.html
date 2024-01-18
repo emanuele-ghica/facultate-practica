@@ -7,11 +7,11 @@
       <ul class="flex items-center gap-4 mr-10">
         <li
           class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button>View accepted exams</button>
+          <button (click) ="displayAccepted()">View accepted exams</button>
         </li>
         <li
           class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button>View pending exams</button>
+          <button (click) ="displayPending()">View pending exams</button>
         </li>
         <li
           class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
@@ -21,4 +21,31 @@
     </div>
   </nav>
 </header>
+
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Subject Name</th>
+    <th scope="col">Student Year</th>
+    <th scope="col">Curriculum</th>
+    <th scope="col">Date</th>
+    <th scope="col">Starting Hour</th>
+    <th scope="col">Status</th>
+  </tr>
+  </thead>
+  <tbody >
+  <tr *ngFor="let row of filteredData">
+    <td>{{row.subject}}</td>
+    <td>{{row.studentYear}}</td>
+    <td>{{row.curriculum}}</td>
+    <td>{{row.examDate}}</td>
+    <td>{{row.startingHour}}</td>
+    <td>{{row.status}}</td>
+    <td>
+      <button *ngIf="showDeleteButton" mat-raised-button color="warn" class="table-button">Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
 

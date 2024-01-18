@@ -54,13 +54,7 @@ export class AddExamComponent implements OnInit{
         [
           Validators.required
         ],
-      ],
-      endingHour: [
-        '',
-        [
-          Validators.required
-        ]
-      ],
+      ]
     })
   }
 
@@ -69,7 +63,7 @@ export class AddExamComponent implements OnInit{
     const myDate: string = this.addForm.get('date')?.value;
     const formattedDate = new Date(myDate).toLocaleDateString('ro-RO', {
       day: '2-digit',
-      month: 'short',
+      month: '2-digit',
       year: 'numeric'
       })
     if(this.addForm.valid) {
