@@ -52,24 +52,51 @@ export class AddExamComponent implements OnInit{
       startingHour: [
         '',
         [
-          Validators.required
+          Validators.required,
+          Validators.pattern(/^[0-9]+$/)
         ],
       ]
     })
   }
 
-
   postExam() {
     const myDate: string = this.addForm.get('date')?.value;
-    const formattedDate = new Date(myDate).toLocaleDateString('ro-RO', {
+
+    const formattedDate = new Date(myDate).toLocaleString('ro-RO', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
       })
+
+    let startingHour: string = '';
+    startingHour = this.addForm.value.startingHour+ ':00:00.000Z'
+    let dateTimeString: string = '';
+    dateTimeString = `${formattedDate} ${startingHour}`;
+    let isoDateTime = new Date(dateTimeString).toISOString();
+    console.log(typeof isoDateTime);
+
     if(this.addForm.valid) {
-      this.addForm.get('date')?.patchValue(formattedDate);
-      const examData = this.addForm.value;
-      this._studentService.addExamData(examData);
+      const examData = {
+        curriculum: this.addForm.value.subject,
+        studentYear: 'III',
+        room: 'room-1',
+        LocalDateTime: isoDateTime,
+        examStatus: 'PROPOSED',
+        teachers: [
+          {
+            username: this.addForm.value.professor,
+          }
+        ]
+      }
+      console.log(examData);
+      this._studentService.createExam(examData).subscribe(
+        (response) => {
+          console.log('Exam created successfully:', response);
+        },
+        (error) => {
+          console.error('Error creating exam:', error);
+        }
+      );
     }
   }
 }
