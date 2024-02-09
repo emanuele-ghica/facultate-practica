@@ -3,21 +3,24 @@
   <form [formGroup]="addForm">
     <mat-form-field>
       <mat-label>Choose professor</mat-label>
-      <mat-select formControlName="professor">
-        <mat-option *ngFor="let professor of professorsNames" [value]="professor.value" > {{professor.viewValue}}</mat-option>
+      <mat-select formControlName="professor" (selectionChange)="onSelectProfessor($event.value)">
+        <mat-option *ngFor="let professor of professorNames" [value]="professor" > {{professor}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Choose subject</mat-label>
       <mat-select formControlName="subject">
-        <mat-option *ngFor="let subject of subjectNames" [value]="subject.value">{{subject.viewValue}}</mat-option>
+        <mat-option *ngFor="let subject of subjects" [value]="subject">
+          {{subject}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Choose a date</mat-label>
-      <input matInput formControlName="date" [matDatepicker]="picker">
+      <input matInput
+             formControlName="date"
+             [matDatepicker]="picker">
       <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -28,7 +31,7 @@
       <input matInput
              placeholder="Enter the starting hour:"
              formControlName="startingHour"/>
-      <mat-error> starting hour is invalid</mat-error>
+      <mat-error> Starting hour is invalid</mat-error>
     </mat-form-field>
 
   </form>

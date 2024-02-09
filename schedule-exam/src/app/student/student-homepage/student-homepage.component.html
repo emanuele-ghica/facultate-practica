@@ -24,20 +24,23 @@
   <tr>
     <th scope="col">Professor Name</th>
     <th scope="col">Subject Name</th>
+    <th scope="col">Curriculum</th>
     <th scope="col">Date</th>
+    <th scope="col">Room</th>
     <th scope="col">Status</th>
   </tr>
   </thead>
   <tbody >
-  <tr *ngFor="let row of exams">
-    <td>{{row.teachers}}</td>
+  <tr *ngFor="let row of mappedExams | async">
+    <td>{{row.professorName}}</td>
+    <td>{{row.subject}}</td>
     <td>{{row.curriculum}}</td>
-    <td>{{row.scheduledDateTime}}</td>
-    <td>
-      <button mat-raised-button color="warn">{{row.examStatus}}</button>
+    <td>{{row.proposedDate | date:'dd-MM-yyyy HH:mm'}}</td>
+    <td>{{row.room}}</td>
+    <td>{{row.status}}
     </td>
-    <td>
-      <button mat-raised-button color="warn" class="table-button">Delete</button>
+    <td *ngIf="row.status !== 'ACCEPTED' && row.status !== 'REVIEW'">
+      <button mat-raised-button color="warn" class="table-button" (click) ="deleteExam(row.id)">Delete</button>
     </td>
   </tr>
   </tbody>

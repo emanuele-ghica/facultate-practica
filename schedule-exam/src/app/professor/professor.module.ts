@@ -17,7 +17,6 @@ import {MatButtonModule} from "@angular/material/button";
       {
         path: '',
         component: ProfessorHomepageComponent,
-        // canActivate: [AuthGuard],
         data: {expectedRole: 'professor'}
       },
       {path: 'login', component: LoginComponent}

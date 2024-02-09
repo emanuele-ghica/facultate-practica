@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Injectable, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {AddExamComponent} from "./add-exam/add-exam.component";
 import {StudentService} from "../student.service";
-import {ExamDTO} from "../../DTO/exam-dto";
+import {AuthService} from "../../Services/auth.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-student-homepage',
@@ -11,26 +12,39 @@ import {ExamDTO} from "../../DTO/exam-dto";
 })
 export class StudentHomepageComponent implements OnInit{
 
-  exams: ExamDTO[] = [];
+  mappedExams: Observable<any[]> | undefined;
 
-  // examData: any[];
   constructor(public dialog: MatDialog,
-              private _studentService: StudentService) {
-    // this.examData = this._studentService.getExamData();
+              private _studentService: StudentService,
+              private _auth: AuthService) {
   }
 
   ngOnInit() : void {
-    this.getExams();
-    console.log(this.getExams())
-
+   this.reloadExams();
   }
 
-  getExams(): void {
-    this._studentService.getAllExams().subscribe(exams =>{
-      this.exams = exams;
-    })
+  reloadExams() : void {
+    this.mappedExams = this._studentService.getExamsByUserId(this._auth.getUserId());
   }
   openDialog() {
-    this.dialog.open(AddExamComponent);
+    const dialogRef = this.dialog.open(AddExamComponent);
+    dialogRef.afterClosed().subscribe(
+      () => {
+        this.reloadExams();
+      }
+    )
   }
+
+  deleteExam(examId: number): void {
+    this._studentService.deleteExamById(examId).subscribe(
+      () => {
+        console.log('Exam deleted successfully')
+        this.reloadExams();
+      },
+      (error) => {
+        console.error('Error deleting exam:', error)
+      }
+    )
+  }
+
 }

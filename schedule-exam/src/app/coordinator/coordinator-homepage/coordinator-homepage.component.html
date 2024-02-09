@@ -15,11 +15,7 @@
         </li>
         <li
           class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button (click)="displayOtherAccepted()">View others accepted exams</button>
-        </li>
-        <li
-          class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button (click)="displayOtherPending()">View others pending exams</button>
+          <button (click)="displayOther()">View others accepted exams</button>
         </li>
         <li
           class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
@@ -30,30 +26,53 @@
   </nav>
 </header>
 
-
-
-<table *ngIf="showMyTable" class="table">
+<table *ngIf="showPendingTable" class="table">
   <thead>
   <tr>
     <th scope="col">Subject Name</th>
-    <th scope="col">Student Year</th>
     <th scope="col">Curriculum</th>
+    <th scope="col">Student Year</th>
     <th scope="col">Date</th>
-    <th scope="col">Starting Hour</th>
     <th scope="col">Status</th>
   </tr>
   </thead>
   <tbody >
-  <tr *ngFor="let row of filteredData">
+  <tr *ngFor="let row of mappedExams | async">
     <td>{{row.subject}}</td>
     <td>{{row.studentYear}}</td>
     <td>{{row.curriculum}}</td>
-    <td>{{row.examDate}}</td>
-    <td>{{row.startingHour}}</td>
+    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
     <td>{{row.status}}</td>
-    <td>
-      <button *ngIf="showDeleteButton" mat-raised-button color="warn" class="table-button">Delete</button>
+    <td *ngIf="row.status !== 'REVIEW'">
+      <button mat-raised-button color="primary" class="table-button" (click)="acceptExam(row.id)">Accept</button>
     </td>
+    <td *ngIf="row.status !== 'REVIEW'">
+      <button  mat-raised-button color="warn" class="table-button" (click)="deleteExam(row.id)">Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+
+<table *ngIf="showAcceptedTable" class="table">
+  <thead>
+  <tr>
+    <th scope="col">Subject Name</th>
+    <th scope="col">Curriculum</th>
+    <th scope="col">Student Year</th>
+    <th scope="col">Date</th>
+    <th scope="col">Room</th>
+    <th scope="col">Status</th>
+  </tr>
+  </thead>
+  <tbody >
+  <tr *ngFor="let row of acceptedExams | async">
+    <td>{{row.subject}}</td>
+    <td>{{row.curriculum}}</td>
+    <td>{{row.studentYear}}</td>
+    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+    <td>{{row.room}}</td>
+    <td>{{row.status}}</td>
   </tr>
   </tbody>
 </table>
@@ -63,21 +82,19 @@
   <tr>
     <th scope="col">Professor Name</th>
     <th scope="col">Subject Name</th>
-    <th scope="col">Student Year</th>
     <th scope="col">Curriculum</th>
+    <th scope="col">Student Year</th>
     <th scope="col">Date</th>
-    <th scope="col">Starting Hour</th>
     <th scope="col">Status</th>
   </tr>
   </thead>
   <tbody >
-  <tr *ngFor="let row of otherFilteredData">
+  <tr *ngFor="let row of otherExams | async">
     <td>{{row.professorName}}</td>
     <td>{{row.subject}}</td>
-    <td>{{row.studentYear}}</td>
     <td>{{row.curriculum}}</td>
-    <td>{{row.examDate}}</td>
-    <td>{{row.startingHour}}</td>
+    <td>{{row.studentYear}}</td>
+    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
     <td>{{row.status}}</td>
   </tr>
   </tbody>

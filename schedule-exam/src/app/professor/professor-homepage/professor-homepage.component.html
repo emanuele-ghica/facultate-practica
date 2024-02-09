@@ -22,30 +22,57 @@
   </nav>
 </header>
 
-
-<table class="table">
+<table class="table" *ngIf="showPendingTable">
   <thead>
   <tr>
     <th scope="col">Subject Name</th>
-    <th scope="col">Student Year</th>
     <th scope="col">Curriculum</th>
+    <th scope="col">Student Year</th>
     <th scope="col">Date</th>
-    <th scope="col">Starting Hour</th>
     <th scope="col">Status</th>
   </tr>
   </thead>
   <tbody >
-  <tr *ngFor="let row of filteredData">
+  <tr *ngFor="let row of mappedExams | async">
     <td>{{row.subject}}</td>
-    <td>{{row.studentYear}}</td>
     <td>{{row.curriculum}}</td>
-    <td>{{row.examDate}}</td>
-    <td>{{row.startingHour}}</td>
+    <td>{{row.studentYear}}</td>
+    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
     <td>{{row.status}}</td>
-    <td>
-      <button *ngIf="showDeleteButton" mat-raised-button color="warn" class="table-button">Delete</button>
+    <td  *ngIf="row.status !== 'REVIEW'">
+      <button mat-raised-button color="primary" class="table-button"  (click)="acceptExam(row.id)">Accept</button>
+    </td>
+    <td *ngIf="row.status !== 'REVIEW'" >
+      <button  mat-raised-button color="warn" class="table-button" (click)="deleteExam(row.id)">Delete</button>
     </td>
   </tr>
   </tbody>
 </table>
+
+<table class="table" *ngIf="showAcceptedTable">
+  <thead>
+  <tr>
+    <th scope="col">Subject Name</th>
+    <th scope="col">Curriculum</th>
+    <th scope="col">Student Year</th>
+    <th scope="col">Date</th>
+    <th scope="col">Room</th>
+    <th scope="col">Status</th>
+  </tr>
+  </thead>
+  <tbody >
+  <tr *ngFor="let row of acceptedExams | async">
+    <td>{{row.subject}}</td>
+    <td>{{row.curriculum}}</td>
+    <td>{{row.studentYear}}</td>
+    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+    <td>{{row.room}}</td>
+    <td>{{row.status}}</td>
+  </tr>
+  </tbody>
+</table>
+
+
+
+
 

@@ -1,5 +1,9 @@
+
 import {Component, OnInit} from '@angular/core';
 import {ProfData} from "../../Models/profData";
+import {Observable} from "rxjs";
+import {ProfessorService} from "../professor.service";
+import {AuthService} from "../../Services/auth.service";
 
 
 @Component({
@@ -9,30 +13,54 @@ import {ProfData} from "../../Models/profData";
 })
 export class ProfessorHomepageComponent implements OnInit{
 
-
-  data: ProfData[] = [
-    new ProfData(1, 'TW', '20.01.2024', 'III', 'IAG', 12, 'Accepted'),
-    new ProfData(2, 'SAP', '24.01.2024', 'II', 'IA', 10, 'Pending'),
-    new ProfData(3, 'SSI', '30.01.2024', 'I', 'MI', 8, 'Accepted'),
-
-  ]
-  filteredData: ProfData[] = [];
-  showDeleteButton: boolean = false;
+  constructor(private _professorService: ProfessorService,
+              private _auth: AuthService) {}
+  mappedExams: Observable<any[]> | undefined;
+  acceptedExams: Observable<any[]> | undefined;
 
   ngOnInit() {
-    this.displayAccepted();
+    this.reloadExams();
   }
 
 
+  reloadExams() : void {
+    this.mappedExams = this._professorService.getExamByStatusPR(this._auth.getUserId())
+    this.acceptedExams = this._professorService.getExamByStatusAccepted(this._auth.getUserId());
 
-  displayAccepted(): void {
-    this.filteredData = this.data.filter((item) => item.status === 'Accepted');
-    this.showDeleteButton = false;
+  }
+
+  showAcceptedTable: boolean = true;
+  showPendingTable: boolean = false;
+
+  displayAccepted() {
+    this.showAcceptedTable = true;
+    this.showPendingTable = false;
   }
 
   displayPending() {
-    this.filteredData = this.data.filter((item) => item.status === 'Pending');
-    this.showDeleteButton = true;
+    this.showAcceptedTable = false;
+    this.showPendingTable = true;
+  }
+
+
+  acceptExam(examId: number) {
+    this._professorService.acceptExamById(examId).subscribe(
+      () => {
+        console.log('Exam is now being reviewed')
+        this.reloadExams();
+      }
+    )
+  }
+  deleteExam(examId: number): void {
+    this._professorService.deleteExamById(examId).subscribe(
+      () => {
+        console.log('Exam deleted successfully')
+        this.reloadExams();
+      },
+      (error) => {
+        console.error('Error deleting exam:', error)
+      }
+    )
   }
 
 }

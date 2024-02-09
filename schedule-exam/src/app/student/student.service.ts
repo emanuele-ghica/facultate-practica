@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiService} from "../api/api.service";
 import {Observable} from "rxjs";
 import {AuthService} from "../Services/auth.service";
-import {ExamDTO} from "../DTO/exam-dto";
 
 @Injectable({
   providedIn: 'root',
@@ -11,44 +10,24 @@ import {ExamDTO} from "../DTO/exam-dto";
 
 export class StudentService {
   constructor(private _http: HttpClient,
-              private _api: ApiService,
-              private _auth: AuthService) {}
-
+              private _api: ApiService) {}
 
   public createExam(examData: any): Observable<any> {
     const examUrl = this._api.examUrl;
-    const authToken = this._auth.getAuthToken();
-    console.log(authToken);
-    if(authToken) {
-      const headers = new HttpHeaders({
-        'Authorization': `${authToken}`,
-        'Content-Type': 'application/json'
-      });
-      return this._http.post(examUrl, examData, {headers});
-    }
-    return new Observable<any>()
+      return this._http.post(examUrl, examData);
   }
 
-  getAllExams(): Observable<ExamDTO[]> {
-    const examUrl = this._api.examUrl;
-    const authToken = this._auth.getAuthToken();
-    if(authToken) {
-      const headers = new HttpHeaders({
-        'Authorization': `${authToken}`,
-        'Content-Type': 'application/json'
-      })
-      return this._http.get<ExamDTO[]>(examUrl, {headers});
-    }
-    return new Observable<ExamDTO[]>();
+
+  public getExamsByUserId(userId: number): Observable<any[]> {
+    const userByIdUrl = `${this._api.examUrl}/user/${userId}`;
+    return this._http.get<any[]>(userByIdUrl)
   }
 
-  private examData: any[] = [];
+  public deleteExamById(examId: number): Observable<void> {
+    const deleteUrl = `${this._api.examUrl}/delete/${examId}`
+    return this._http.delete<void>(deleteUrl)
 
-  addExamData(data: any) {
-    this.examData.push(data);
   }
 
-  getExamData() {
-    return this.examData;
-  }
+
 }

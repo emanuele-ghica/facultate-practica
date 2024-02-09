@@ -5,11 +5,12 @@ import { Injectable } from '@angular/core';
 })
 export class ApiService {
 
-  private baseUrl = 'http://localhost:8080/api'
+  private baseUrl = 'http://localhost:3000/api'
 
 
   get examUrl(): string {
     return `${this.baseUrl}/exams`;
   }
+
   constructor() { }
 }

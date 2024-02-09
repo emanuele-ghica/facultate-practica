@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LoginComponent} from "./login/login.component";
+import {AuthGuard} from "./guard/auth.guard";
 
 const routes: Routes = [
   {
@@ -11,25 +12,33 @@ const routes: Routes = [
     path: 'secretary',
     loadChildren: () =>
       import('./secretary/secretary.module').then((m) =>
-        m.SecretaryModule)
+        m.SecretaryModule),
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'secretary'}
   },
   {
     path: 'professor',
     loadChildren: () =>
       import('./professor/professor.module').then((m) =>
-        m.ProfessorModule)
+        m.ProfessorModule),
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'professor'}
   },
   {
     path: 'coordinator',
     loadChildren: () =>
       import('./coordinator/coordinator.module').then((m) =>
-        m.CoordinatorModule)
+        m.CoordinatorModule),
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'coordinator'}
   },
   {
     path: 'student',
     loadChildren: () =>
       import('./student/student.module').then((m) =>
-        m.StudentModule)
+        m.StudentModule),
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'student'}
   },
   {
     path: '',
