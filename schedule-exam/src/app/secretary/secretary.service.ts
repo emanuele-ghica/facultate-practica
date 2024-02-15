@@ -17,9 +17,9 @@ export class SecretaryService {
     return this._http.get<any[]>(url);
   }
 
-  public acceptExamById(examId: number, room:string): Observable<any> {
-    const url = `${this._api.examUrl}/${examId}/accept`
-    return this._http.put(url, {id: examId, room: room});
+  public acceptExamById(examData: any): Observable<any> {
+    const url = `${this._api.examUrl}/${examData.id}/accept`
+    return this._http.put(url, examData);
   }
 
   public deleteExamById(examId: number): Observable<void> {

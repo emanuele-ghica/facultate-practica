@@ -1,102 +1,115 @@
-<header class="bg-violet-600">
+<header class="bg-gray-600">
   <nav class="flex justify-between items-center w-full mx-auto">
     <div class="ml-10">
-      <p>Schedule Exam</p>
+      <p class="text-white">Schedule Exam</p>
     </div>
     <div class="py-2">
       <ul class="flex items-center gap-4 mr-10">
-        <li
-          class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button (click) ="displayAccepted()">View my accepted exams</button>
-        </li>
-        <li
-          class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button (click)="displayPending()">View my pending exams</button>
-        </li>
-        <li
-          class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button (click)="displayOther()">View others accepted exams</button>
-        </li>
-        <li
-          class="border-2 border-black bg-gray-400 text-white px-5 py-2 rounded-full hover:bg-white hover:text-black hover:cursor-pointer text-center font-semibold">
-          <button [routerLink]="'/login'">Logout</button>
-        </li>
+        <button mat-raised-button (click)="displayAccepted()">View my accepted exams</button>
+        <button mat-raised-button (click)="displayPending()">View my pending exams</button>
+        <button mat-raised-button (click)="displayOther()">View others accepted exams</button>
+        <button mat-raised-button [routerLink]="'/login'" (click)="logout()">Logout</button>
       </ul>
     </div>
   </nav>
 </header>
 
-<table *ngIf="showPendingTable" class="table">
-  <thead>
-  <tr>
-    <th scope="col">Subject Name</th>
-    <th scope="col">Curriculum</th>
-    <th scope="col">Student Year</th>
-    <th scope="col">Date</th>
-    <th scope="col">Status</th>
-  </tr>
-  </thead>
-  <tbody >
-  <tr *ngFor="let row of mappedExams | async">
-    <td>{{row.subject}}</td>
-    <td>{{row.studentYear}}</td>
-    <td>{{row.curriculum}}</td>
-    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
-    <td>{{row.status}}</td>
-    <td *ngIf="row.status !== 'REVIEW'">
-      <button mat-raised-button color="primary" class="table-button" (click)="acceptExam(row.id)">Accept</button>
-    </td>
-    <td *ngIf="row.status !== 'REVIEW'">
-      <button  mat-raised-button color="warn" class="table-button" (click)="deleteExam(row.id)">Delete</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div class="relative overflow-x-auto">
+  <table *ngIf="showPendingTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" >
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">Subject Name</th>
+        <th scope="col" class="px-6 py-3">Curriculum</th>
+        <th scope="col" class="px-6 py-3">Student Year</th>
+        <th scope="col" class="px-6 py-3">Date</th>
+        <th scope="col" class="px-6 py-3">Status</th>
+        <th scope="col" class="px-6 py-3">Action</th>
+        <th scope="col" class="px-6 py-3">Delete</th>
+      </tr>
+    </thead>
+    <tbody >
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" *ngFor="let row of mappedExams | async">
+        <td class="px-12 py-4">{{row.subject}}</td>
+        <td class="px-12 py-4">{{row.curriculum}}</td>
+        <td class="px-12 py-4"> {{row.studentYear}}</td>
+        <td class="py-4">{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+        <td class="px-4 py-4" [ngClass]="{
+            'text-yellow-500': row.status === 'REVIEW',
+            'text-red-500': row.status === 'PROPOSED'}" >{{row.status}}</td>
+        <td class="px-3 py-4" >
+          <button *ngIf="row.status !== 'REVIEW'" mat-raised-button color="primary" class="table-button" (click)="acceptExam(row.id)">Accept</button>
+        </td>
+        <td class="px-3 py-4" >
+          <button *ngIf="row.status !== 'REVIEW'"  mat-raised-button color="warn" class="table-button" (click)="deleteExam(row.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
+<div class="relative overflow-x-auto">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" *ngIf="showAcceptedTable">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr>
+      <th scope="col" class="px-6 py-3">Subject Name</th>
+      <th scope="col" class="px-6 py-3">Curriculum</th>
+      <th scope="col" class="px-6 py-3">Student Year</th>
+      <th scope="col" class="px-6 py-3">Date</th>
+      <th scope="col" class="px-6 py-3">Room</th>
+      <th scope="col" class="px-6 py-3">Status</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" *ngFor="let row of acceptedExams | async">
+      <td class="px-12 py-4">
+        {{row.subject}}</td>
+      <td class="px-12 py-4">
+        {{row.curriculum}}</td>
+      <td class="px-14 py-4">
+        {{row.studentYear}}</td>
+      <td class=" py-4">
+        {{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+      <td class="px-7 py-4">
+        {{row.room}}</td>
+      <td class="px-3 py-4 text-green-500">
+        {{row.status}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-<table *ngIf="showAcceptedTable" class="table">
-  <thead>
-  <tr>
-    <th scope="col">Subject Name</th>
-    <th scope="col">Curriculum</th>
-    <th scope="col">Student Year</th>
-    <th scope="col">Date</th>
-    <th scope="col">Room</th>
-    <th scope="col">Status</th>
-  </tr>
-  </thead>
-  <tbody >
-  <tr *ngFor="let row of acceptedExams | async">
-    <td>{{row.subject}}</td>
-    <td>{{row.curriculum}}</td>
-    <td>{{row.studentYear}}</td>
-    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
-    <td>{{row.room}}</td>
-    <td>{{row.status}}</td>
-  </tr>
-  </tbody>
-</table>
+<div class="relative overflow-x-auto">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400" *ngIf="showOtherTable">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr>
+      <th scope="col" class="px-6 py-3">Professor Name</th>
+      <th scope="col" class="px-6 py-3">Subject Name</th>
+      <th scope="col" class="px-6 py-3">Curriculum</th>
+      <th scope="col" class="px-6 py-3">Student Year</th>
+      <th scope="col" class="px-6 py-3">Date</th>
+      <th scope="col" class="px-6 py-3">Room</th>
+      <th scope="col" class="px-6 py-3">Status</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" *ngFor="let row of otherExams | async">
+      <td class="px-5 py-4">
+        {{row.professorName}}</td>
+      <td class="px-12 py-4">
+        {{row.subject}}</td>
+      <td class="px-12 py-4">
+        {{row.curriculum}}</td>
+      <td class="px-14 py-4">
+        {{row.studentYear}}</td>
+      <td class=" py-4">
+        {{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+      <td class="px-7 py-4">
+        {{row.room}}</td>
+      <td class="px-3 py-4 text-green-500">
+        {{row.status}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-<table *ngIf="showOtherTable" class="table">
-  <thead>
-  <tr>
-    <th scope="col">Professor Name</th>
-    <th scope="col">Subject Name</th>
-    <th scope="col">Curriculum</th>
-    <th scope="col">Student Year</th>
-    <th scope="col">Date</th>
-    <th scope="col">Status</th>
-  </tr>
-  </thead>
-  <tbody >
-  <tr *ngFor="let row of otherExams | async">
-    <td>{{row.professorName}}</td>
-    <td>{{row.subject}}</td>
-    <td>{{row.curriculum}}</td>
-    <td>{{row.studentYear}}</td>
-    <td>{{row.proposedDate | date: 'dd-MM-yyyy HH:mm'}}</td>
-    <td>{{row.status}}</td>
-  </tr>
-  </tbody>
-</table>
 

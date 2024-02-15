@@ -17,7 +17,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     if(!await bcrypt.compare(req.body.password, user.password)) {
-        return res.status(400).send({
+        return res.status(401).send({
             message: 'Invalid credentials'
         });
     }
@@ -33,12 +33,31 @@ router.post('/login', async (req, res, next) => {
     });
 });
 
+
+const authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized: Missing token' });
+    }
+
+    jwt.verify(token, 'secret', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
 router.post('/logout', (req,res) => {
-    res.cookie('jwt', '', {maxAge: 0})
+    res.cookie('jwt', '', {maxAge: 0, httpOnly: true})
 
     res.send({
         message: 'success',
     })
 })
 
-module.exports = router;
+module.exports = {
+    router,
+    authenticateToken
+}

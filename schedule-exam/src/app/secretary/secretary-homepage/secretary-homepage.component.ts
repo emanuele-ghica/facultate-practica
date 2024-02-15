@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {SecretaryData} from "../../Models/secretaryData";
 import {Observable} from "rxjs";
 import {SecretaryService} from "../secretary.service";
-import {AddExamComponent} from "../../student/student-homepage/add-exam/add-exam.component";
 import {MatDialog} from "@angular/material/dialog";
 import {SecretaryDialogComponent} from "./secretary-dialog/secretary-dialog.component";
+import {AuthService} from "../../Services/auth.service";
 
 
 @Component({
@@ -21,6 +20,7 @@ export class SecretaryHomepageComponent implements OnInit{
   constructor(
     private _secretary: SecretaryService,
     private dialog: MatDialog,
+    private _auth: AuthService
   ) { }
 
 
@@ -42,14 +42,14 @@ export class SecretaryHomepageComponent implements OnInit{
     this.showReviewTable = true;
   }
 
-  openDialog(id: number): void {
+
+  openDialog(id: number, proposedDate: string): void {
     const dialogRef = this.dialog.open(SecretaryDialogComponent, {
-      data: {id: id}
-    });
+      data: {id: id, proposedDate: proposedDate}
+    })
     dialogRef.afterClosed().subscribe(
       () => {
         this.reloadExams();
-
       }
     )
   }
@@ -70,5 +70,15 @@ export class SecretaryHomepageComponent implements OnInit{
     this.mappedReview = this._secretary.getExamByStatusReview()
     this.mappedAccepted = this._secretary.getExamByStatusAccepted();
   }
+
+
+  logout() : void {
+    this._auth.logout().subscribe(() => {
+      localStorage.removeItem('token')
+      console.log(localStorage.getItem('token'));
+    })
+  }
+
+
 
 }

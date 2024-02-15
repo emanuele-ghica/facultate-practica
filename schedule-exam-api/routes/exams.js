@@ -4,6 +4,7 @@ const Exam = require('../models/exam');
 const User = require('../models/user');
 const Subject = require('../models/subjects');
 const { Op } = require('sequelize');
+const {authenticateToken} = require('./auth');
 
 
 router.use(express.json());
@@ -39,20 +40,21 @@ router.post('', async (req, res, next) => {
     try {
         console.log("Received Request Body:", req.body);
 
-        // nu inteleg de ce nu merge :D
-        // const existingExam = await Exam.findOne({
-        //     professor_name:   professorName,
-        //     subject: subject,
-        //     curriculum:  curriculum,
-        //     student_year: studentYear,
-        // });
-        //
-        // console.log("Existing Exam:", existingExam);
-        //
-        // if (existingExam) {
-        //     console.log("An exam with these details already exists");
-        //     return res.status(400).json({ message: 'An exam with these details already exists' });
-        // }
+        const existingExam = await Exam.findOne({
+            where: {
+                professor_name: professorName,
+                subject: subject,
+                curriculum: curriculum,
+                student_year: studentYear,
+            }
+        });
+
+        console.log("Existing Exam:", existingExam);
+
+        if (existingExam) {
+            console.log("An exam with these details already exists");
+            return res.status(409).json({ message: 'An exam with these details already exists' });
+        }
 
         const now = new Date();
         const proposedDateTime = new Date(LocalDateTime);
@@ -214,14 +216,29 @@ router.put('/:id/review', async (req, res) => {
 
 router.put('/:id/accept', async (req, res) => {
     try {
-        const examId = req.body.id;
+        const examId = req.params.id;
+        const proposedDate = req.body.proposedDate
         const room = req.body.room;
+
+        const sameRoomExam = await Exam.findOne({
+            where: {
+                proposed_date: proposedDate,
+                room: room
+            }
+        });
+
+
+        if (sameRoomExam) {
+            return res.status(409).json({ error: 'An exam with the same proposed date and room already exists' });
+        }
+
         const exam = await Exam.findOne(
             {
                 where:
                     {id: examId}
             }
         )
+
         if(!exam) {
             return res.status(404).json({error: 'Exam not found'})
         }

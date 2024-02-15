@@ -8,6 +8,8 @@ import { SecretaryDialogComponent } from './secretary-homepage/secretary-dialog/
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
 
 
 
@@ -21,7 +23,9 @@ import {ReactiveFormsModule} from "@angular/forms";
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   declarations: [
     SecretaryHomepageComponent,

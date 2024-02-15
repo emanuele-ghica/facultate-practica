@@ -20,7 +20,7 @@ export class StudentHomepageComponent implements OnInit{
   }
 
   ngOnInit() : void {
-   this.reloadExams();
+      this.reloadExams();
   }
 
   reloadExams() : void {
@@ -45,6 +45,13 @@ export class StudentHomepageComponent implements OnInit{
         console.error('Error deleting exam:', error)
       }
     )
+  }
+
+  logout() : void {
+    this._auth.logout().subscribe(() => {
+      localStorage.removeItem('token')
+      console.log(localStorage.getItem('token'));
+    })
   }
 
 }

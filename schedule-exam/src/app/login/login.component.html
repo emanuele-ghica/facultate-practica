@@ -10,6 +10,9 @@
         <label for="password" class="block text-base mb-1">Password</label>
         <input type="password" id="password" class="border w-full text-base focus:outline-none py-1 px-2" formControlName="password" placeholder="Enter password...">
       </div>
+      <div *ngIf="invalidCredentials" class="text-red-600">
+        Invalid email or password. Please try again.
+      </div>
       <div class="mt-5">
         <button type="submit" class="border-2 border-gray-700 bg-gray-700 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-gray-700 font-semi-bold" >
           Login

@@ -5,6 +5,8 @@ import {AddExamService} from "./add-exam.service";
 import {Subject} from "../../../Models/subject";
 import {AuthService} from "../../../Services/auth.service";
 import {Observable} from "rxjs";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {StudentHomepageComponent} from "../student-homepage.component";
 @Component({
   selector: 'app-add-exam',
   templateUrl: './add-exam.component.html',
@@ -15,6 +17,7 @@ export class AddExamComponent implements OnInit{
               private _studentService: StudentService,
               private _addExamService: AddExamService,
               private _auth: AuthService,
+              public dialogRef: MatDialogRef<StudentHomepageComponent>
              ) {}
   public addForm!: FormGroup;
   professorData: any[] = [];
@@ -23,6 +26,10 @@ export class AddExamComponent implements OnInit{
   selectedProfessor: any = null;
   subjects: Subject[] = []
   selectedProfessorID: number = 0;
+  userInfo = this._auth.getUserInfo();
+
+  public hasError: boolean = true;
+  errorMessage: string = '';
 
   ngOnInit():void {
     this.addForm = this._formBuilder.group({
@@ -98,8 +105,8 @@ export class AddExamComponent implements OnInit{
             professorName: this.addForm.value.professor,
             professorId: this.selectedProfessorID,
             subject: this.addForm.value.subject,
-            curriculum: this._auth.getUserCurriculum(),
-            studentYear: this._auth.getUserStudentYear(),
+            curriculum: this.userInfo?.curriculum,
+            studentYear: this.userInfo?.studentYear,
             LocalDateTime: isoDateTime,
             studentId: this._auth.getUserId(),
           }
@@ -107,14 +114,26 @@ export class AddExamComponent implements OnInit{
           this._studentService.createExam(examData).subscribe(
             (response) => {
               console.log('Exam created successfully:', response);
+              this.hasError = false;
+              if(!this.hasError) {
+                  this.dialogRef.close();
+              }
             },
             (error) => {
-              console.error('Error creating exam:', error);
+              this.hasError = true;
+              console.error('Error creating exam', error);
+              if (error.status === 409) {
+                this.errorMessage = 'An exam with these details already exists';
+              } else if (error.status === 400) {
+                this.errorMessage = 'The proposed date and time cannot be in the past';
+              } else {
+                this.errorMessage = 'An error occurred while creating the exam';
+              }
             }
-          );
+          )
         }
       } else {
-        console.log('Starting hour must be between 8 and 20');
+        this.errorMessage = 'Starting hour must be between 8 and 20';
       }
     }
   }

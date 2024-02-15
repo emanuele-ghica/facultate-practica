@@ -24,12 +24,28 @@ export class AuthService {
     return this._http.post(`${this._baseUrl}/login`, credentials,  { withCredentials: true });
   }
 
+  logout(): Observable<any> {
+    return this._http.post(`${this._baseUrl}/logout`, {})
+  }
+
   setUserRole(role: string): void {
     this._userRole =  role;
   }
 
-  getUserRole(): string {
-    return <string>this._userRole;
+  getUserRole(): string | null {
+    const token = this.getToken();
+    console.log('Token:', token);
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        console.log('Decoded token:', decodedToken);
+        return decodedToken.role;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
   }
   setUserStudentYear(studentYear: string) : void {
     this._studentYear = studentYear
@@ -65,7 +81,32 @@ export class AuthService {
     return jwtDecode(token);
   }
 
-  public redirectToRolePage(userRole: string): void {
+  setToken(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  getToken(): string | null{
+    return localStorage.getItem('token');
+  }
+
+
+  getUserInfo():  { id: number, role: string, coordinating: string, curriculum: string, studentYear: string} | null {
+    const token = this.getToken();
+    console.log('Token:', token);
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token); // Decode the token
+        console.log('Decoded token:', decodedToken);
+        return { id: decodedToken.id, role: decodedToken.role, coordinating: decodedToken.coordinating, curriculum: decodedToken.curriculum, studentYear: decodedToken.studentYear };
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  public redirectToRolePage(userRole: string | null): void {
     switch (userRole) {
       case 'student':
         this._router.navigate(['/student']);

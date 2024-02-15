@@ -63,4 +63,10 @@ export class ProfessorHomepageComponent implements OnInit{
     )
   }
 
+  logout() : void {
+    this._auth.logout().subscribe(() => {
+      localStorage.removeItem('token')
+      console.log(localStorage.getItem('token'));
+    })
+  }
 }

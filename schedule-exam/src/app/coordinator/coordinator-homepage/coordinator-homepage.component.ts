@@ -13,20 +13,6 @@ import {Observable} from "rxjs";
 })
 export class CoordinatorHomepageComponent implements OnInit{
 
-
-  data: ProfData[] = [
-    new ProfData(1, 'TW', '20.01.2024', 'III', 'IAG', 12, 'Accepted'),
-    new ProfData(2, 'SAP', '24.01.2024', 'II', 'IA', 10, 'Pending'),
-    new ProfData(3, 'SSI', '30.01.2024', 'I', 'MI', 8, 'Accepted'),
-
-  ]
-
-
-
-  otherFilteredData: CoordinatorData[] = [];
-
-
-
   constructor(
     private _coordinator: CoordinatorService,
     private _auth: AuthService,
@@ -37,17 +23,25 @@ export class CoordinatorHomepageComponent implements OnInit{
     this.reloadExams();
   }
 
+  userInfo = this._auth.getUserInfo();
   showAcceptedTable: boolean = true;
   showPendingTable: boolean = false;
   showOtherTable: boolean = false;
   mappedExams: Observable<any[]> | undefined;
   acceptedExams: Observable<any[]> | undefined;
   otherExams: Observable<any[]> | undefined;
-  reloadExams() : void {
-    this.mappedExams = this._coordinator.getExamByStatusPR(this._auth.getUserId())
-    this.acceptedExams = this._coordinator.getExamByStatusAccepted(this._auth.getUserId())
-    this.otherExams = this._coordinator.getOtherAcceptedExams(this._auth.getUserId(), this._auth.getUserCoordinating())
 
+  reloadExams() : void {
+    this.mappedExams = this._coordinator.getExamByStatusPR(this._auth.getUserId());
+
+    this.acceptedExams = this._coordinator.getExamByStatusAccepted(this._auth.getUserId());
+
+    if(this.userInfo) {
+      const userId = this.userInfo.id;
+      const coordinating = this.userInfo.coordinating
+      this.otherExams = this._coordinator.getOtherAcceptedExams(userId, coordinating
+      );
+    }
   }
 
 
@@ -87,5 +81,12 @@ export class CoordinatorHomepageComponent implements OnInit{
     this.showAcceptedTable = false;
     this.showPendingTable = false;
     this.showOtherTable = true;
+  }
+
+  logout() : void {
+    this._auth.logout().subscribe(() => {
+      localStorage.removeItem('token')
+      console.log(localStorage.getItem('token'));
+    })
   }
 }
