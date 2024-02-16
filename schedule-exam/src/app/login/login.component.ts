@@ -34,7 +34,6 @@ export class LoginComponent {
     }
     if (this.loginForm.valid) {
       const credentials = this.loginForm.value;
-      console.log(credentials);
       this._authService.login(credentials).subscribe(
         (response) => {
           this._authService.setToken(response.token);
@@ -51,7 +50,6 @@ export class LoginComponent {
             this._authService.setUserId(userId);
             this._authService.setUserCoordinating(coordinating)
             this._authService.redirectToRolePage(userRole)
-            console.log(userRole, userId, userStudentYear, userCurriculum, coordinating);
           }
         },
         (error) => {

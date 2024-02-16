@@ -61,14 +61,8 @@ export class SecretaryDialogComponent implements OnInit {
         // If not daylight saving time, add 2 hours (GMT+2)
         parsedDate.setHours(parsedDate.getHours() + 2);
       }
-
-      console.log(this.data.proposedDate);
-
       proposedDate = parsedDate.toISOString();
-
-
       room = this.acceptForm.value.room
-      console.log(proposedDate);
       const requestBody = {
         id: id,
         proposedDate: proposedDate,

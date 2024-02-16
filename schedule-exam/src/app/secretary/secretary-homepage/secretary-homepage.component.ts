@@ -57,7 +57,6 @@ export class SecretaryHomepageComponent implements OnInit{
   deleteExam(examId: number): void {
     this._secretary.deleteExamById(examId).subscribe(
       () => {
-        console.log('Exam deleted successfully')
         this.reloadExams();
       },
       (error) => {
@@ -75,7 +74,6 @@ export class SecretaryHomepageComponent implements OnInit{
   logout() : void {
     this._auth.logout().subscribe(() => {
       localStorage.removeItem('token')
-      console.log(localStorage.getItem('token'));
     })
   }
 

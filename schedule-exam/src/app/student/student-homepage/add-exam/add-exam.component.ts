@@ -98,7 +98,6 @@ export class AddExamComponent implements OnInit{
         dateTimeString = `${formattedDate} ${startingHour}`;
         let isoDateTime: string = '';
         isoDateTime = new Date(dateTimeString).toISOString();
-        console.log(isoDateTime);
 
         if(this.addForm.valid) {
           const examData = {
@@ -110,7 +109,6 @@ export class AddExamComponent implements OnInit{
             LocalDateTime: isoDateTime,
             studentId: this._auth.getUserId(),
           }
-          console.log(examData);
           this._studentService.createExam(examData).subscribe(
             (response) => {
               console.log('Exam created successfully:', response);

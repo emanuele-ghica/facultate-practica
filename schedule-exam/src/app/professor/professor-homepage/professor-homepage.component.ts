@@ -46,7 +46,6 @@ export class ProfessorHomepageComponent implements OnInit{
   acceptExam(examId: number) {
     this._professorService.acceptExamById(examId).subscribe(
       () => {
-        console.log('Exam is now being reviewed')
         this.reloadExams();
       }
     )
@@ -54,7 +53,6 @@ export class ProfessorHomepageComponent implements OnInit{
   deleteExam(examId: number): void {
     this._professorService.deleteExamById(examId).subscribe(
       () => {
-        console.log('Exam deleted successfully')
         this.reloadExams();
       },
       (error) => {
@@ -66,7 +64,6 @@ export class ProfessorHomepageComponent implements OnInit{
   logout() : void {
     this._auth.logout().subscribe(() => {
       localStorage.removeItem('token')
-      console.log(localStorage.getItem('token'));
     })
   }
 }

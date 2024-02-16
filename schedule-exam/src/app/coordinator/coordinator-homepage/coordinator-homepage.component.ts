@@ -48,7 +48,6 @@ export class CoordinatorHomepageComponent implements OnInit{
   acceptExam(examId: number) {
     this._coordinator.acceptExamById(examId).subscribe(
       () => {
-        console.log('Exam is now being reviewed')
         this.reloadExams();
       }
     )
@@ -56,7 +55,6 @@ export class CoordinatorHomepageComponent implements OnInit{
   deleteExam(examId: number): void {
     this._coordinator.deleteExamById(examId).subscribe(
       () => {
-        console.log('Exam deleted successfully')
         this.reloadExams();
       },
       (error) => {
@@ -86,7 +84,6 @@ export class CoordinatorHomepageComponent implements OnInit{
   logout() : void {
     this._auth.logout().subscribe(() => {
       localStorage.removeItem('token')
-      console.log(localStorage.getItem('token'));
     })
   }
 }

@@ -11,7 +11,6 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     const userInfo = this._auth.getUserInfo();
-    console.log(userInfo);
     if(userInfo) {
       const {id, role} = userInfo;
       this._auth.redirectToRolePage(role);

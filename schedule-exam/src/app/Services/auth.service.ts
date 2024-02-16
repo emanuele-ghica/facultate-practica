@@ -34,11 +34,9 @@ export class AuthService {
 
   getUserRole(): string | null {
     const token = this.getToken();
-    console.log('Token:', token);
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
-        console.log('Decoded token:', decodedToken);
         return decodedToken.role;
       } catch (error) {
         console.error('Error decoding token:', error);
@@ -63,16 +61,6 @@ export class AuthService {
     this._coordinating = coordinating
   }
 
-  getUserCoordinating() : string {
-    return <string>this._coordinating;
-  }
-  getUserStudentYear() : string {
-    return <string>this._studentYear
-  }
-
-  getUserCurriculum() : string {
-    return <string>this._studentCurriculum;
-  }
   getUserId() : number {
     return <number>this._userId;
   }
@@ -92,11 +80,9 @@ export class AuthService {
 
   getUserInfo():  { id: number, role: string, coordinating: string, curriculum: string, studentYear: string} | null {
     const token = this.getToken();
-    console.log('Token:', token);
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token); // Decode the token
-        console.log('Decoded token:', decodedToken);
         return { id: decodedToken.id, role: decodedToken.role, coordinating: decodedToken.coordinating, curriculum: decodedToken.curriculum, studentYear: decodedToken.studentYear };
       } catch (error) {
         console.error('Error decoding token:', error);
