@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const cron = require('node-cron');
 const Exam = require('../models/exam');
 const User = require('../models/user');
 const Subject = require('../models/subjects');
 const { Op } = require('sequelize');
-const {authenticateToken} = require('./auth');
 
 
 router.use(express.json());
@@ -340,4 +340,25 @@ router.get('/otherProfessors/:professorId/:coordinating', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+cron.schedule('0 0 * * *', async () => {
+    try {
+
+        const examToBeDeleted = await Exam.destroy({
+            where: {
+                proposed_date: {
+                    [Op.lt]: new Date()
+                }
+            }
+        });
+
+        console.log(`${examToBeDeleted} exams deleted.`);
+    } catch (error) {
+        console.error('Error deleting exams:', error);
+    }
+}, {
+    scheduled: true,
+    timezone: "Europe/Bucharest"
+});
+
 module.exports = router;
