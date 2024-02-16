@@ -14,3 +14,5 @@
     4, 'SAP', 2
 5. Open two terminals in your IDE, one pointing to "schedule-exam" and one to "schedule-exam-api"
 6. Run the commands "ng serve" in the terminal pointing to "schedule-exam" and "nodemon" in the terminal pointing to "schedule-exam-api"
+7. Login with the student entity and add an exam to get started.
+   
