@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
+//Method to log in the user. It tries to find
 router.post('/login', async (req, res, next) => {
     const user = await User.findOne(
         { where:
@@ -34,21 +35,7 @@ router.post('/login', async (req, res, next) => {
 });
 
 
-const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized: Missing token' });
-    }
-
-    jwt.verify(token, 'secret', (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid token' });
-        }
-        req.user = decoded;
-        next();
-    });
-};
-
+//Method to clear the cookie of the logged in user.
 router.post('/logout', (req,res) => {
     res.cookie('jwt', '', {maxAge: 0, httpOnly: true})
 
@@ -58,6 +45,5 @@ router.post('/logout', (req,res) => {
 })
 
 module.exports = {
-    router,
-    authenticateToken
+    router
 }
