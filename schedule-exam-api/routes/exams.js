@@ -8,6 +8,8 @@ const { Op } = require('sequelize');
 
 
 router.use(express.json());
+
+// returns professor and their subjects
 router.get('/users/professors', async (req, res) => {
     try {
         const professors = await User.findAll({
@@ -35,6 +37,7 @@ router.get('/users/professors', async (req, res) => {
     }
 })
 
+// create exam
 router.post('', async (req, res, next) => {
     const {professorName,professorId, subject, curriculum, studentYear, LocalDateTime, studentId} =  req.body;
     try {
@@ -82,6 +85,7 @@ router.post('', async (req, res, next) => {
     }
 })
 
+//return the exams created by a specific user
 router.get('/user/:userId', async (req, res) => {
     const userId = req.params.userId;
     try {
@@ -110,6 +114,7 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
+//delete exam
 router.delete('/delete/:examId', async (req, res) => {
     const examId = req.params.examId;
     try {
@@ -135,6 +140,7 @@ router.delete('/delete/:examId', async (req, res) => {
         }
 });
 
+//exams with status review or proposed
 router.get('/professor/:professorId', async (req, res) => {
     const professorId = req.params.professorId;
     try {
@@ -162,6 +168,8 @@ router.get('/professor/:professorId', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 })
+
+//professor's accepted exams
 router.get('/professorAccepted/:professorId', async (req, res) => {
     const professorId = req.params.professorId;
     try {
@@ -189,6 +197,7 @@ router.get('/professorAccepted/:professorId', async (req, res) => {
     }
 })
 
+// accepted by professor, status changes from proposed to review
 router.put('/:id/review', async (req, res) => {
     try {
         const examId = req.params.id;
@@ -213,7 +222,7 @@ router.put('/:id/review', async (req, res) => {
     }
 })
 
-
+// secretary accepts an exam
 router.put('/:id/accept', async (req, res) => {
     try {
         const examId = req.params.id;
@@ -254,6 +263,7 @@ router.put('/:id/accept', async (req, res) => {
     }
 });
 
+// exams with status review sent to secretary
 router.get('/secretary/review', async (req, res) => {
     try {
         const exams = await Exam.findAll({
@@ -279,6 +289,7 @@ router.get('/secretary/review', async (req, res) => {
     }
 })
 
+// satus accepted sent to secretary
 router.get('/secretary/accepted', async (req, res) => {
     try {
         const exams = await Exam.findAll({
@@ -305,6 +316,7 @@ router.get('/secretary/accepted', async (req, res) => {
     }
 })
 
+//coordinator
 router.get('/otherProfessors/:professorId/:coordinating', async (req, res) => {
     try {
         const professorId = req.params.professorId;
@@ -341,6 +353,8 @@ router.get('/otherProfessors/:professorId/:coordinating', async (req, res) => {
     }
 });
 
+
+// runs every 24 hours and deletes past exams
 cron.schedule('0 0 * * *', async () => {
     try {
 
